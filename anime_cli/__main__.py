@@ -27,7 +27,7 @@ from anime_cli.mpv import MPV  # noqa: E402
 
 # Configuration
 __url__ = "https://anime.goos.lol/anime/gogoanime"
-__theme__ = "[#0047ab]"
+__theme__ = "[#90BEDE]"
 __version__ = "1.2.5"
 
 # Initialization
