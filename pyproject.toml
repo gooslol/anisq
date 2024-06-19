@@ -1,0 +1,30 @@
+[project]
+name = "anime-cli"
+dynamic = ["version"]
+description = "Simple to use anime watching experience in your terminal."
+authors = [
+    { name = "iiPython", email = "ben@iipython.dev" }
+]
+dependencies = [
+    "rich",
+    "requests",
+    "wrapt_timeout_decorator"
+]
+readme = "README.txt"
+requires-python = ">= 3.11"
+
+[project.scripts]
+anisq = "anime_cli.__main__:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["anime_cli"]
+
+[tool.hatch.version]
+path = "anime_cli/__main__.py"
