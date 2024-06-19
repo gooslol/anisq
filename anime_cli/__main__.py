@@ -16,11 +16,8 @@ from .keys import readchar
 # MPV importing (because its special idfk)
 mpv_dll_path = Path(__file__).parent / "libmpv-2.dll"
 if os.name == "nt" and not mpv_dll_path.is_file():
-
-    # This is very stupid, I don't care.
-    print("Downloading mpv dll bindings (because github won't let me upload them)...")
-    file_uri = "https://cdn.discordapp.com/attachments/990375009916694548/1252838087868809246/libmpv-2.dll?ex=6673abe4&is=66725a64&hm=f111cbacc524c892eb0e421b7d47ae63de022b6a9347610b86794d8fa36dcba8"
-    with get(file_uri, stream = True) as resp:
+    print("Downloading MPV DLL bindings (might take a second)...")
+    with get("https://github.com/gooslol/anisq/releases/download/v1.2.5/libmpv-2.dll", stream = True) as resp:
         with mpv_dll_path.open("wb") as fh:
             for chunk in resp.iter_content(chunk_size = 8192): 
                 fh.write(chunk)
