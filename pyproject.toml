@@ -1,5 +1,5 @@
 [project]
-name = "anime-cli"
+name = "anisq"
 dynamic = ["version"]
 description = "Simple to use anime watching experience in your terminal."
 authors = [
@@ -14,7 +14,7 @@ readme = "README.txt"
 requires-python = ">= 3.11"
 
 [project.scripts]
-anisq = "anime_cli.__main__:main"
+anisq = "anisq.__main__:main"
 
 [build-system]
 requires = ["hatchling"]
@@ -24,7 +24,7 @@ build-backend = "hatchling.build"
 allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
-packages = ["anime_cli"]
+packages = ["src/anisq"]
 
 [tool.hatch.version]
-path = "anime_cli/__main__.py"
+path = "src/anisq/__main__.py"

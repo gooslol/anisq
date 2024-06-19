@@ -23,12 +23,12 @@ if os.name == "nt" and not mpv_dll_path.is_file():
                 fh.write(chunk)
 
 os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
-from anime_cli.mpv import MPV  # noqa: E402
+from .mpv import MPV  # noqa: E402
 
 # Configuration
 __url__ = "https://anime.goos.lol/anime/gogoanime"
 __theme__ = "[#90BEDE]"
-__version__ = "1.2.5"
+__version__ = "1.2.6"
 
 # Initialization
 rcon = Console()
