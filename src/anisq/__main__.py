@@ -11,6 +11,7 @@ from wrapt_timeout_decorator import timeout
 
 from .menu import menu
 from .keys import readchar
+from .client import AnimeClient
 
 # MPV importing (because its special idfk)
 mpv_dll_path = Path(__file__).parent / "libmpv-2.dll"
@@ -25,19 +26,18 @@ os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
 from .mpv import MPV  # noqa: E402
 
 # Configuration
-__url__ = "https://anisq.goos.lol/api"
 __theme__ = "[#90BEDE]"
-__version__ = "1.3.0"
+__version__ = "1.3.1"
 
 # Initialization
-rcon = Console()
+rcon, client = Console(), AnimeClient()
 def write(text: str) -> None:
     rcon.print(__theme__ + text, highlight = False)
 
 # Handle data
 def perform_search(query: str) -> None:
     with rcon.status(f"{__theme__}Searching"):
-        results = get(f"{__url__}/{query}").json()["results"]
+        results = client.search(query)
 
     if not results:
         return rcon.input("[red]No results found, press [ENTER] to continue.")
@@ -57,7 +57,7 @@ def perform_search(query: str) -> None:
 def show_details(media_id: str) -> None:
     rcon.clear()
     with rcon.status(f"{__theme__}Locating episodes"):
-        media_data = get(f"{__url__}/info/{media_id}").json()
+        media_data = client.info(media_id)
 
     # Loop episode list
     while True:
@@ -97,13 +97,9 @@ def show_details(media_id: str) -> None:
                 continue
 
 def play_media(episode_id: str, media_title: str, episode_name: str, position: float = 0) -> bool:
-    def fetch_link() -> None:
-        rcon.clear()
-        with rcon.status(f"{__theme__}Fetching stream links"):
-            available_sources = [s for s in get(f"{__url__}/watch/{episode_id}").json()["sources"] if s["quality"][0].isdigit()]
-            return [s for s in available_sources if s["quality"] == f"{max([int(s["quality"][:-1]) for s in available_sources])}p"][0]["url"]
-
-    best_source = fetch_link()
+    rcon.clear()
+    with rcon.status(f"{__theme__}Fetching stream link"):
+        best_source = client.watch(episode_id)
 
     write(f"Now playing: {media_title} - {episode_name}")
     write("Close mpv to continue back to the episode list.")
