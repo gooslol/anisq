@@ -2,7 +2,6 @@
 
 # Modules
 import os
-import time
 from pathlib import Path
 
 from rich.console import Console
@@ -26,13 +25,12 @@ os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
 from .mpv import MPV  # noqa: E402
 
 # Configuration
-__url__ = "https://anime.goos.lol/anime/gogoanime"
+__url__ = "https://anisq.goos.lol/api"
 __theme__ = "[#90BEDE]"
-__version__ = "1.2.6"
+__version__ = "1.3.0"
 
 # Initialization
 rcon = Console()
-rcon.__start__ = time.time()
 def write(text: str) -> None:
     rcon.print(__theme__ + text, highlight = False)
 
@@ -82,14 +80,6 @@ def show_details(media_id: str) -> None:
             )
             if (not should_autoplay) or (index == len(episodes) - 1):
                 break
-
-            # Handle grass touching
-            if (time.time() - rcon.__start__) >= 7200:
-                rcon.clear()
-                write("You've been watching anime for 2+ hours. Go touch some [/][green]grass[/].")
-                write("After you're done, press any button to continue to autoplay.")
-                readchar()
-                rcon.__start__ = time.time() * 1000  # Never show up again
 
             # Handle autoplay
             def check_continue() -> None:
