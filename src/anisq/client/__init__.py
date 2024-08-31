@@ -9,7 +9,7 @@ from typing import List
 class AnimeClient():
     def __init__(self) -> None:
         self.session = requests.Session()
-        self.base_url = "https://anisq.goos.lol/api"
+        self.base_url = "https://anisq.iipython.dev/api"
 
     def search(self, query: str) -> List[dict]:
         return self.session.get(f"{self.base_url}/{query}").json()["results"]
