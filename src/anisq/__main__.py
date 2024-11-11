@@ -10,8 +10,9 @@ from requests import get
 from wrapt_timeout_decorator import timeout
 
 from .menu import menu
-from .keys import readchar
 from .client import AnimeClient
+
+from readchar import readkey
 
 # MPV importing (because its special idfk)
 mpv_dll_path = Path(__file__).parent / "libmpv-2.dll"
@@ -23,11 +24,11 @@ if os.name == "nt" and not mpv_dll_path.is_file():
                 fh.write(chunk)
 
 os.environ["PATH"] = os.path.dirname(__file__) + os.pathsep + os.environ["PATH"]
-from .mpv import MPV  # noqa: E402
+from mpv import MPV  # noqa: E402
 
 # Configuration
 __theme__ = "[#90BEDE]"
-__version__ = "1.4.1"
+__version__ = "1.4.2"
 
 # Initialization
 rcon, client = Console(), AnimeClient()
@@ -88,7 +89,7 @@ def show_details(media_id: str) -> None:
                 write("Autoplay status: [/][green]✓ Active\n")
                 write("Next episode will begin playing in 5 second(s)...")
                 write("Press any key to cancel autoplay.")
-                readchar()
+                readkey()
 
             try:
                 timeout(dec_timeout = 5)(check_continue)()

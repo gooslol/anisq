@@ -4,7 +4,7 @@
 import sys
 import typing
 
-from .keys import readchar, keys
+from readchar import readkey, key
 
 # Main menu class
 class MenuHandler(object):
@@ -16,19 +16,19 @@ class MenuHandler(object):
 
             # Handle control
             if iterated:
-                key = readchar()
-                if key in [keys.UP, "w"]:
-                    index = length - 1 if index - 1 < 0 else index - 1
+                match readkey():
+                    case key.UP | "w":
+                        index = length - 1 if index - 1 < 0 else index - 1
 
-                elif key in [keys.DOWN, "s"]:
-                    index = 0 if index + 1 >= length else index + 1
+                    case key.DOWN | "s":
+                        index = 0 if index + 1 >= length else index + 1
 
-                elif key == keys.ENTER:
-                    sys.stdout.write("\n")
-                    return options[index][0]
+                    case key.ENTER:
+                        sys.stdout.write("\n")
+                        return options[index][0]
 
-                elif key == keys.CTRL_C:
-                    raise KeyboardInterrupt
+                    case key.CTRL_C:
+                        raise KeyboardInterrupt
 
             # Print out options
             for i, option in enumerate(options):

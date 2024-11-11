@@ -6,9 +6,11 @@ authors = [
     { name = "iiPython", email = "ben@iipython.dev" }
 ]
 dependencies = [
-    "rich",
-    "requests",
-    "wrapt_timeout_decorator"
+    "mpv>=1.0.7",
+    "readchar>=4.2.1",
+    "requests>=2.32.3",
+    "rich>=13.9.4",
+    "wrapt-timeout-decorator>=1.5.1",
 ]
 readme = "README.txt"
 requires-python = ">= 3.11"
@@ -19,9 +21,6 @@ anisq = "anisq.__main__:main"
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
-
-[tool.hatch.metadata]
-allow-direct-references = true
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/anisq"]
