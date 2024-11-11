@@ -8,19 +8,15 @@ const USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36
 
 class GogoCDN {
     constructor() {
-        this.referer = "";
         this.keys = {
             key: CryptoJS.enc.Utf8.parse("37911490979715163134003223491201"),
             secondKey: CryptoJS.enc.Utf8.parse("54674138327930866480207815084989"),
             iv: CryptoJS.enc.Utf8.parse("3134003223491201"),
         };
         this.sources = [];
-        this.serverName = "goload";
     }
 
     async extract(videoUrl) {
-        this.referer = videoUrl.href;
-
         const res = await fetch(videoUrl.href);
         const $ = load(await res.text());
 
@@ -44,36 +40,18 @@ class GogoCDN {
                 const url = decryptedData.source[0].file.slice(0, index);
                 this.sources.push({
                     url: url + "/" + res.split("\n")[1],
-                    isM3U8: (url + res.split("\n")[1]).includes(".m3u8"),
                     quality: quality + "p",
-                });
-            });
-            decryptedData.source.forEach((source) => {
-                this.sources.push({
-                    url: source.file,
-                    isM3U8: source.file.includes(".m3u8"),
-                    quality: "default",
                 });
             });
         } else {
             decryptedData.source.forEach((source) => {
                 this.sources.push({
                     url: source.file,
-                    isM3U8: source.file.includes(".m3u8"),
                     quality: source.label.split(" ")[0] + "p",
                 });
             });
         }
-        decryptedData.source_bk.forEach((source) => {
-            this.sources.push({
-                url: source.file,
-                isM3U8: source.file.includes(".m3u8"),
-                quality: "backup",
-            });
-        });
-        return {
-            sources: this.sources
-        };
+        return this.sources;
     };
 
     async addSources(source) {
@@ -121,69 +99,35 @@ class Gogoanime {
         this.ajaxUrl = "https://ajax.gogocdn.net/ajax";
     }
 
-    async search(query, page = 1) {
-        const searchResult = {
-            currentPage: page,
-            hasNextPage: false,
-            results: [],
-        };
-        const res = await fetch(`${this.baseUrl}/filter.html?keyword=${encodeURIComponent(query)}&page=${page}`);
+    async search(query) {
+        const results = [];
+        const res = await fetch(`${this.baseUrl}/filter.html?keyword=${encodeURIComponent(query)}&page=1`);
         const $ = load(await res.text());
-        searchResult.hasNextPage = $("div.anime_name.new_series > div > div > ul > li.selected").next().length > 0;
-        $("div.last_episodes > ul > li").each((i, el) => {
-            searchResult.results.push({
+        $("div.last_episodes > ul > li").each((_, el) => {
+            results.push({
                 id: $(el).find("p.name > a").attr("href")?.split("/")[2],
                 title: $(el).find("p.name > a").text(),
-                url: `${this.baseUrl}/${$(el).find("p.name > a").attr("href")}`,
                 releaseDate: $(el).find("p.released").text().trim().replace("Released: ", ""),
             });
         });
-        return searchResult;
+        return results;
     };
 
     async fetchAnimeInfo(id) {
         if (!id.includes("gogoanime")) id = `${this.baseUrl}/category/${id}`;
-
-        const animeInfo = {
-            id: "",
-            title: "",
-            url: "",
-            genres: [],
-            totalEpisodes: 0,
-        };
+        const animeInfo = {};
         const res = await fetch(id);
 
         const $ = load(await res.text());
 
         animeInfo.id = new URL(id).pathname.split("/")[2];
-        animeInfo.title = $(
-            "section.content_left > div.main_body > div:nth-child(2) > div.anime_info_body_bg > h1"
-        )
-            .text()
-            .trim();
-        animeInfo.url = id;
-        animeInfo.releaseDate = $("div.anime_info_body_bg > p:nth-child(8)")
-            .text()
-            .trim()
-            .split("Released: ")[1];
-        animeInfo.description = $("div.anime_info_body_bg > div:nth-child(6)")
-            .text()
-            .trim()
-            .replace("Plot Summary: ", "");
-
-        animeInfo.type = $("div.anime_info_body_bg > p:nth-child(4) > a")
-            .text()
-            .trim()
-            .toUpperCase();
-
-        animeInfo.otherName = $(".other-name a").text().trim();
+        animeInfo.title = $("section.content_left > div.main_body > div:nth-child(2) > div.anime_info_body_bg > h1").text().trim();
+        animeInfo.releaseDate = $("div.anime_info_body_bg > p:nth-child(8)").text().trim().split("Released: ")[1];
         const ep_start = $("#episode_page > li").first().find("a").attr("ep_start");
         const ep_end = $("#episode_page > li").last().find("a").attr("ep_end");
         const movie_id = $("#movie_id").attr("value");
         const alias = $("#alias_anime").attr("value");
-        const html = await fetch(
-            `${this.ajaxUrl}/load-list-episode?ep_start=${ep_start}&ep_end=${ep_end}&id=${movie_id}&default_ep=${0}&alias=${alias}`
-        );
+        const html = await fetch(`${this.ajaxUrl}/load-list-episode?ep_start=${ep_start}&ep_end=${ep_end}&id=${movie_id}&default_ep=${0}&alias=${alias}`);
         const $$ = load(await html.text());
         animeInfo.episodes = [];
         $$("#episode_related > li").each((i, el) => {
@@ -194,17 +138,12 @@ class Gogoanime {
             });
         });
         animeInfo.episodes = animeInfo.episodes.reverse();
-        animeInfo.totalEpisodes = parseInt(ep_end ?? "0");
         return animeInfo;
     };
-    async fetchEpisodeSources(episodeId, downloadUrl) {
+    async fetchEpisodeSources(episodeId) {
         if (episodeId.startsWith("http")) {
             const serverUrl = new URL(episodeId);
-            return {
-                headers: { Referer: serverUrl.origin },
-                ...(await new GogoCDN(this.proxyConfig, this.adapter).extract(serverUrl)),
-                download: downloadUrl ? downloadUrl : `https://${serverUrl.host}/download${serverUrl.search}`,
-            };
+            return (await new GogoCDN(this.proxyConfig, this.adapter).extract(serverUrl));
         }
         const res = await fetch(`${this.baseUrl}/${episodeId}`);
         const $ = load(await res.text());

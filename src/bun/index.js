@@ -2,7 +2,7 @@
 
 import Gogoanime from "./provider";
 
-const anime = new Gogoanime()
+const anime = new Gogoanime();
 
 export default {
     async fetch(req) {
@@ -14,7 +14,7 @@ export default {
             case "/v1/search":
                 const query = url.searchParams.get("q");
                 if (!query) return new Response("Missing query.");
-                return Response.json((await anime.search(query)).results);
+                return Response.json((await anime.search(query)));
     
             case "/v1/info":
                 const item = url.searchParams.get("id");
