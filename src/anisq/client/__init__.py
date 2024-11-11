@@ -9,15 +9,14 @@ from typing import List
 class AnimeClient():
     def __init__(self) -> None:
         self.session = requests.Session()
-        self.base_url = "https://anisq.iipython.dev/api"
+        self.base_url = "https://anisq.iipython.dev/v1"
 
     def search(self, query: str) -> List[dict]:
-        return self.session.get(f"{self.base_url}/{query}").json()["results"]
+        return self.session.get(f"{self.base_url}/search", params = {"q": query}).json()
 
     def info(self, media_id: str) -> dict:
-        return self.session.get(f"{self.base_url}/info/{media_id}").json()
+        return self.session.get(f"{self.base_url}/info", params = {"id": media_id}).json()
 
     def watch(self, episode_id: str) -> str:
-        sources = [s for s in self.session.get(f"{self.base_url}/watch/{episode_id}").json()["sources"] if s["quality"][0].isdigit()]
+        sources = [s for s in self.session.get(f"{self.base_url}/watch", params = {"id": episode_id}).json()["sources"] if s["quality"][0].isdigit()]
         return [s for s in sources if s["quality"] == f"{max([int(s["quality"][:-1]) for s in sources])}p"][0]["url"]
-

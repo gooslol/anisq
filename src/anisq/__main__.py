@@ -27,7 +27,7 @@ from .mpv import MPV  # noqa: E402
 
 # Configuration
 __theme__ = "[#90BEDE]"
-__version__ = "1.3.1"
+__version__ = "1.4.0"
 
 # Initialization
 rcon, client = Console(), AnimeClient()
@@ -40,7 +40,8 @@ def perform_search(query: str) -> None:
         results = client.search(query)
 
     if not results:
-        return rcon.input("[red]No results found, press [ENTER] to continue.")
+        rcon.input("[red]No results found, press [ENTER] to continue.")
+        return
 
     # Loop search results
     while True:

@@ -2,13 +2,13 @@
 
 # Modules
 import sys
-from typing import Any, List
+import typing
 
 from .keys import readchar, keys
 
 # Main menu class
 class MenuHandler(object):
-    def show(self, options: List[tuple]) -> Any:
+    def show(self, options: list[tuple]) -> typing.Any:
         options.append((None, "<-- Go Back"))
         iterated, length, index = 0, len(options), 0
         while True:

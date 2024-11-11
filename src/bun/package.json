@@ -1,0 +1,11 @@
+{
+    "name": "anisq-server",
+    "module": "index.ts",
+    "type": "module",
+    "devDependencies": {
+        "@types/bun": "latest"
+    },
+    "dependencies": {
+        "cheerio": "^1.0.0"
+    }
+}
