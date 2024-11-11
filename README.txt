@@ -4,7 +4,7 @@ simple to use anime watching experience in your terminal
 =====
 
 installation:
-$ pip install git+https://github.com/gooslol/anisq
+$ uv pip install git+https://github.com/gooslol/anisq
 
 usage:
 $ anisq
@@ -12,6 +12,6 @@ $ anisq
 =====
 
 credits:
-me (iipython) for making everything
+me (iipython) for the code
 dmmd for bugtesting and actually using it
-consumet api for the actual anime finding
+gogoanime for the anime

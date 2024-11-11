@@ -18,5 +18,5 @@ class AnimeClient():
         return self.session.get(f"{self.base_url}/info", params = {"id": media_id}).json()
 
     def watch(self, episode_id: str) -> str:
-        sources = [s for s in self.session.get(f"{self.base_url}/watch", params = {"id": episode_id}).json()["sources"] if s["quality"][0].isdigit()]
+        sources = [s for s in self.session.get(f"{self.base_url}/watch", params = {"id": episode_id}).json()]
         return [s for s in sources if s["quality"] == f"{max([int(s["quality"][:-1]) for s in sources])}p"][0]["url"]

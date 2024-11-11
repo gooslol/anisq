@@ -27,7 +27,7 @@ from .mpv import MPV  # noqa: E402
 
 # Configuration
 __theme__ = "[#90BEDE]"
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 # Initialization
 rcon, client = Console(), AnimeClient()
