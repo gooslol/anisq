@@ -24,6 +24,7 @@ class Metadata:
 def play(title: str, position: float, best_source: str) -> tuple[bool | None, float]:
     meta = Metadata()
     def log_handler(loglevel: str, component: str, message: str) -> None:
+        print(component, message)
         meta.diderror = loglevel == "error"
 
     # Send it off to MPV

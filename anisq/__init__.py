@@ -1,6 +1,6 @@
 # Configuration
 __theme__ = "[#90BEDE]"
-__version__ = "2.0.0"
+__version__ = "2.1.0"
 
 # Handle file downloading
 import requests
