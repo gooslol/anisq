@@ -1,8 +1,9 @@
-# anisq
+# Hide NodeJS / webtorrent
+anisq/client/downloads/
+
+# Python
 .venv/
 __pycache__/
-libmpv-2.dll
 
-# server
-.wrangler/
-node_modules/
+# Hide windows MPV dll
+libmpv-2.dll
